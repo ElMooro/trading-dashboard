@@ -296,5 +296,4 @@ export const sma = (data, period = 20) => {
   export const pivotPoints = (data, method = 'standard') => {
     // Implementation for Pivot Points
     return { pivot: 0, r1: 0, r2: 0, r3: 0, s1: 0, s2: 0, s3: 0 };
-  };mkdir -p src/contexts  # This will create the folder if it doesn't exist
-  touch src/contexts/WatchlistContext.js  # This creates the file
+  };

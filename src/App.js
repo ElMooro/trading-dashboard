@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import InteractiveTradingViewChart from './components/InteractiveTradingViewChart';
 import GlobalEconomicChartBuilder from './components/GlobalEconomicChartBuilder';
@@ -7,10 +7,11 @@ import GlobalRiskHeatmap from './components/GlobalRiskHeatmap';
 import Watchlist from './components/Watchlist';
 import { WatchlistProvider } from './contexts/WatchlistContext';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <WatchlistProvider>
         {/* Toast notifications container */}
         <ToastContainer position="top-right" autoClose={3000} />
@@ -25,7 +26,7 @@ function App() {
           {/* Add other routes as needed */}
         </Routes>
       </WatchlistProvider>
-    </Router>
+    </BrowserRouter>
   );
 }
 

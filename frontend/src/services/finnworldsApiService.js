@@ -1,60 +1,82 @@
+// src/services/finnworldsApiService.js
 import axios from 'axios';
 
-// API key stored in environment variables
-const FINNWORLDS_API_KEY = process.env.REACT_APP_FINNWORLDS_API_KEY || 'YOUR_FINNWORLDS_API_KEY_HERE';
-const FINNWORLDS_API_BASE_URL = 'https://api.finnworlds.com/stock';
+// Set your Finnworlds API key - store in environment variables
+const FINNWORLDS_API_KEY = process.env.REACT_APP_FINNWORLDS_API_KEY;
+const FINNWORLDS_BASE_URL = 'https://api.finnworlds.com/v1';
 
-// Function to fetch market data
-export const fetchMarketData = async (symbol, interval = 'daily', limit = 100) => {
+/**
+ * Fetch time series data from Finnworlds API
+ * @param {string} seriesId - Finnworlds series ID
+ * @param {object} options - Additional options
+ */
+export const fetchFinnworldsData = async (seriesId, options = {}) => {
   try {
-    const response = await axios.get(`${FINNWORLDS_API_BASE_URL}/candle`, {
+    const response = await axios.get(`${FINNWORLDS_BASE_URL}/timeseries/${seriesId}`, {
       params: {
-        apikey: FINNWORLDS_API_KEY,
-        symbol,
-        interval,
-        limit
-      },
+        api_key: FINNWORLDS_API_KEY,
+        ...options
+      }
     });
-    
-    return response.data;
+
+    // Transform the data to the expected format
+    const observations = response.data.data.map(item => ({
+      date: item.date,
+      value: parseFloat(item.value) || null
+    }));
+
+    return { observations };
   } catch (error) {
-    console.error(`Error fetching market data for ${symbol}:`, error);
+    console.error("Error fetching Finnworlds data:", error);
     throw error;
   }
 };
 
-// Function to fetch multiple symbols
-export const fetchMultipleSymbols = async (symbols, interval = 'daily', limit = 100) => {
+/**
+ * Fetch series information from Finnworlds
+ * @param {string} seriesId - Finnworlds series ID
+ */
+export const fetchFinnworldsSeriesInfo = async (seriesId) => {
   try {
-    const promises = symbols.map(symbol => fetchMarketData(symbol, interval, limit));
-    const results = await Promise.all(promises);
-    
-    // Format the data for your chart
-    const formattedData = {};
-    symbols.forEach((symbol, index) => {
-      formattedData[symbol] = results[index];
+    const response = await axios.get(`${FINNWORLDS_BASE_URL}/timeseries/${seriesId}/metadata`, {
+      params: {
+        api_key: FINNWORLDS_API_KEY
+      }
     });
+
+    const metadata = response.data;
     
-    return formattedData;
+    return {
+      title: metadata.name || seriesId,
+      description: metadata.description || '',
+      frequency: metadata.frequency || '',
+      units: metadata.unit || '',
+      source: 'Finnworlds',
+      lastUpdated: metadata.last_updated || new Date().toISOString(),
+      category: metadata.category || ''
+    };
   } catch (error) {
-    console.error('Error fetching multiple symbols:', error);
+    console.error("Error fetching Finnworlds series info:", error);
     throw error;
   }
 };
 
-// Function to fetch market news
-export const fetchMarketNews = async (category = 'general') => {
+/**
+ * Search for series in Finnworlds
+ * @param {string} query - Search query
+ */
+export const searchFinnworldsSeries = async (query) => {
   try {
-    const response = await axios.get(`${FINNWORLDS_API_BASE_URL}/news`, {
+    const response = await axios.get(`${FINNWORLDS_BASE_URL}/timeseries/search`, {
       params: {
-        apikey: FINNWORLDS_API_KEY,
-        category,
-      },
+        api_key: FINNWORLDS_API_KEY,
+        q: query
+      }
     });
     
-    return response.data;
+    return response.data.results || [];
   } catch (error) {
-    console.error('Error fetching market news:', error);
+    console.error("Error searching Finnworlds series:", error);
     throw error;
   }
 };

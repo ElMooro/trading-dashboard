@@ -1,46 +1,92 @@
+// src/services/nyFedApiService.js
 import axios from 'axios';
 
-// NY Fed API endpoints
-const NY_FED_API_BASE_URL = 'https://markets.newyorkfed.org/api/';
+const NY_FED_BASE_URL = 'https://www.newyorkfed.org/api';
 
-// Function to fetch NY Fed market data
-export const fetchNyFedData = async (market, dataType) => {
+/**
+ * Fetch time series data from NY Fed API
+ * @param {string} seriesId - NY Fed series ID
+ * @param {object} options - Additional options
+ */
+export const fetchNyFedData = async (seriesId, options = {}) => {
   try {
-    const response = await axios.get(`${NY_FED_API_BASE_URL}${market}/${dataType}.json`);
-    return response.data;
+    // NY Fed typically organizes data by category and dataset
+    const [category, dataset] = seriesId.split('.');
+    
+    const response = await axios.get(`${NY_FED_BASE_URL}/${category}/${dataset}`, {
+      params: {
+        series: seriesId,
+        ...options
+      }
+    });
+
+    // Transform the data to the expected format
+    // Note: This will need adjustment based on actual NY Fed API structure
+    const observations = response.data.observations.map(obs => ({
+      date: obs.date,
+      value: parseFloat(obs.value) || null
+    }));
+
+    return { observations };
   } catch (error) {
-    console.error(`Error fetching NY Fed data for ${market}/${dataType}:`, error);
+    console.error("Error fetching NY Fed data:", error);
     throw error;
   }
 };
 
-// Function to fetch rates data
-export const fetchRatesData = async () => {
+/**
+ * Fetch series information from NY Fed
+ * @param {string} seriesId - NY Fed series ID
+ */
+export const fetchNyFedSeriesInfo = async (seriesId) => {
   try {
-    // Fetch the fed funds rate
-    const fedFundsData = await fetchNyFedData('rates', 'fed-funds');
+    const [category, dataset] = seriesId.split('.');
     
-    // Fetch treasury rates
-    const treasuryData = await fetchNyFedData('rates', 'treasury');
+    const response = await axios.get(`${NY_FED_BASE_URL}/${category}/${dataset}/metadata`, {
+      params: {
+        series: seriesId
+      }
+    });
+
+    const metadata = response.data;
     
-    // Format the data for your chart
     return {
-      fedFunds: fedFundsData,
-      treasury: treasuryData
+      title: metadata.title || seriesId,
+      description: metadata.description || '',
+      frequency: metadata.frequency || '',
+      units: metadata.units || '',
+      source: 'NY Fed',
+      lastUpdated: metadata.last_updated || new Date().toISOString(),
+      category: metadata.category || ''
     };
   } catch (error) {
-    console.error('Error fetching rates data:', error);
+    console.error("Error fetching NY Fed series info:", error);
     throw error;
   }
 };
 
-// Function to fetch SOFR data
-export const fetchSofrData = async () => {
+/**
+ * Fetch Federal Funds Rate data
+ */
+export const fetchFedFundsRate = async () => {
   try {
-    const sofrData = await fetchNyFedData('rates', 'sofr');
-    return sofrData;
+    // This is a placeholder - adjust to actual NY Fed API structure
+    return await fetchNyFedData('monetary.fedfunds');
   } catch (error) {
-    console.error('Error fetching SOFR data:', error);
+    console.error("Error fetching Fed Funds Rate:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch Treasury Yield Curve data
+ */
+export const fetchTreasuryYieldCurve = async () => {
+  try {
+    // This is a placeholder - adjust to actual NY Fed API structure
+    return await fetchNyFedData('markets.treasury');
+  } catch (error) {
+    console.error("Error fetching Treasury Yield Curve:", error);
     throw error;
   }
 };

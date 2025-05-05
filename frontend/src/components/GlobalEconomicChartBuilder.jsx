@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { fetchEconomicIndicators } from '../services/fredApiService';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, Brush, ReferenceLine
@@ -15,7 +16,7 @@ const INDICATORS = [
   { id: 'balance', name: 'Trade Balance', color: '#795548', axis: 'right' },
 ];
 
-// Sample mock data
+// Sample mock data - used as fallback if API fails
 const generateMockData = (startYear = 2018, months = 60) => {
   const data = [];
   const now = new Date();
@@ -106,25 +107,28 @@ const GlobalEconomicChartBuilder = () => {
   const [useDualAxis, setUseDualAxis] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Load data on mount and when timeframe changes
+  // Load data on mount and when timeframe or selected indicators change
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       
-      // In a real app, this would be an API call
-      // For now, we'll use our mock data generator
-      const months = TIMEFRAMES.find(t => t.id === timeframe)?.months || 12;
-      const mockData = generateMockData(2018, months);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setData(mockData);
-      setIsLoading(false);
+      try {
+        // Get real data from FRED API
+        const fredData = await fetchEconomicIndicators(selectedIndicators, timeframe);
+        setData(fredData);
+      } catch (error) {
+        console.error('Error loading economic data:', error);
+        // Fallback to mock data if API fails
+        const months = TIMEFRAMES.find(t => t.id === timeframe)?.months || 12;
+        const mockData = generateMockData(2018, months);
+        setData(mockData);
+      } finally {
+        setIsLoading(false);
+      }
     };
     
     loadData();
-  }, [timeframe]);
+  }, [timeframe, selectedIndicators]);
   
   // Load saved config on mount
   useEffect(() => {
@@ -367,7 +371,8 @@ const GlobalEconomicChartBuilder = () => {
               setIsLoading(true);
               setTimeout(() => {
                 const months = TIMEFRAMES.find(t => t.id === timeframe)?.months || 12;
-                setData(generateMockData(2018, months));
+                const mockData = generateMockData(2018, months);
+                setData(mockData);
                 setIsLoading(false);
               }, 500);
             }}

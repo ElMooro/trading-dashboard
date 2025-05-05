@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
-const InteractiveTradingViewChart = () => {
+function InteractiveTradingViewChart() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [data, setData] = useState([]);
-
+  
   useEffect(() => {
-    // Simulate loading data
-    const timer = setTimeout(() => {
-      setLoading(false);
-      // You can add actual data loading logic here
-    }, 1500);
-
-    return () => clearTimeout(timer);
+    // Simulate data loading
+    const fetchData = async () => {
+      try {
+        // Your data fetching logic here
+        setTimeout(() => {
+          setLoading(false);
+          setData([]); // Replace with actual data
+        }, 1500);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
-
+  
+  // Main render
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -25,29 +33,17 @@ const InteractiveTradingViewChart = () => {
       </div>
     );
   }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="bg-red-100 text-red-800 p-4 rounded-lg max-w-lg">
-          <h3 className="font-bold text-lg mb-2">Error Loading Chart</h3>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Interactive Trading View</h2>
-      <div className="h-96 border border-gray-200 rounded">
-        {/* Placeholder for the actual chart */}
+    <div className="bg-white p-4 rounded-lg shadow-md h-96">
+      <h2 className="text-xl font-semibold mb-4">Interactive Trading Chart</h2>
+      <div className="h-80 border border-gray-200 rounded">
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">Chart will be displayed here</p>
+          <p className="text-gray-500">Chart will render here</p>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default InteractiveTradingViewChart;

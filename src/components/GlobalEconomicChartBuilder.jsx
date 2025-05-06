@@ -561,7 +561,7 @@ const GlobalEconomicChartBuilder = () => {
                 />
                 
                 {/* Reference line for zero */}
-                <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
+                <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" yAxisId="left" />
               </LineChart>
             </ResponsiveContainer>
           )}

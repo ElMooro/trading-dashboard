@@ -1,0 +1,111 @@
+name: API Proxy
+
+on:
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'API to call (fred or finnworlds)'
+        required: true
+      endpoint:
+        description: 'API endpoint path'
+        required: true
+      params:
+        description: 'Query parameters as JSON'
+        required: true
+        
+jobs:
+  proxy-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm install axios
+        
+      - name: Make API request
+        id: api-request
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          FINNWORLDS_API_KEY: ${{ secrets.FINNWORLDS_API_KEY }}
+        run: |
+          API=${{ github.event.inputs.api }}
+          ENDPOINT=${{ github.event.inputs.endpoint }}
+          PARAMS='${{ github.event.inputs.params }}'
+          
+          echo "Making request to $API API: $ENDPOINT"
+          
+          node -e '
+            const axios = require("axios");
+            
+            async function makeRequest() {
+              const api = process.argv[2];
+              const endpoint = process.argv[3];
+              const paramsStr = process.argv[4];
+              
+              let url, params;
+              
+              try {
+                params = JSON.parse(paramsStr);
+              } catch (e) {
+                params = {};
+              }
+              
+              if (api === "fred") {
+                url = `https://api.stlouisfed.org/fred/${endpoint}`;
+                params.api_key = process.env.FRED_API_KEY;
+                params.file_type = "json";
+              } else if (api === "finnworlds") {
+                url = `https://api.finnworlds.com/${endpoint}`;
+                params.api_key = process.env.FINNWORLDS_API_KEY;
+              } else {
+                throw new Error(`Unknown API: ${api}`);
+              }
+              
+              try {
+                const response = await axios.get(url, { params });
+                console.log(JSON.stringify(response.data));
+              } catch (error) {
+                console.error("Error making API request:", error.message);
+                if (error.response) {
+                  console.error("Response data:", error.response.data);
+                }
+                process.exit(1);
+              }
+            }
+            
+            makeRequest();
+          ' "$API" "$ENDPOINT" "$PARAMS" > response.json
+          
+          cat response.json
+          
+      - name: Create data directories
+        run: mkdir -p data/${{ github.event.inputs.api }}
+          
+      - name: Store response data
+        run: |
+          API=${{ github.event.inputs.api }}
+          ENDPOINT=${{ github.event.inputs.endpoint }}
+          
+          # Create safe filename from endpoint path
+          FILENAME=$(echo $ENDPOINT | sed 's/\//_/g')
+          
+          # Create data directory if it doesn't exist
+          mkdir -p data/$API
+          cp response.json data/$API/${FILENAME}.json
+          
+          # Create/update index file
+          mkdir -p data
+          echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") - Updated $API/$FILENAME" >> data/index.txt
+          
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add data/
+          git commit -m "Update API data for $API/$ENDPOINT" || echo "No changes to commit"
+          git push

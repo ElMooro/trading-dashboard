@@ -1,0 +1,345 @@
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f6f8;
+}
+
+.App {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Header */
+.app-header {
+  background-color: #1c2237;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Container Layout */
+.container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.row section {
+  flex: 1;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+section h2 {
+  margin-bottom: 15px;
+  color: #1c2237;
+  border-bottom: 2px solid #e1e5eb;
+  padding-bottom: 10px;
+}
+
+/* Chart Builder Styles */
+.chart-builder {
+  width: 100%;
+}
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.indicator-selector {
+  flex: 1;
+  min-width: 250px;
+}
+
+.indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.indicator-checkbox {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.indicator-checkbox input {
+  margin-right: 5px;
+}
+
+.chart-options {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.dual-axis-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.timeframe-selector select {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.export-btn {
+  padding: 6px 12px;
+  background-color: #1c2237;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background-color: #2a3558;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+  border: 1px solid #e1e5eb;
+  border-radius: 4px;
+}
+
+/* Risk Heatmap Styles */
+.risk-heatmap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.risk-heatmap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* AI Signal Timeline Styles */
+.ai-signal-timeline {
+  width: 100%;
+}
+
+.timeline-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f4f6f8;
+  border-radius: 4px;
+}
+
+.playback-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.playback-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.playback-controls button:hover {
+  color: #4285f4;
+}
+
+.speed-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.speed-controls button {
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  background-color: #e1e5eb;
+  border: none;
+  border-radius: 4px;
+}
+
+.speed-controls button.active {
+  background-color: #1c2237;
+  color: white;
+}
+
+.progress-info {
+  display: flex;
+  gap: 15px;
+}
+
+.signal-details {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f4f6f8;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.signal-metrics {
+  margin: 15px 0;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 10px;
+  background-color: #e1e5eb;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+}
+
+.signal-explanation {
+  margin-top: 15px;
+}
+
+.signal-explanation h4 {
+  margin-bottom: 5px;
+}
+
+/* Watchlist Styles */
+.watchlist {
+  width: 100%;
+}
+
+.watchlist-controls {
+  margin-bottom: 15px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-controls button {
+  padding: 6px 12px;
+  background-color: #e1e5eb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-controls button.active {
+  background-color: #1c2237;
+  color: white;
+}
+
+.watchlist-table-container {
+  overflow-x: auto;
+}
+
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.watchlist-table th,
+.watchlist-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.watchlist-table th {
+  background-color: #f4f6f8;
+  cursor: pointer;
+}
+
+.watchlist-table th:hover {
+  background-color: #e1e5eb;
+}
+
+.watchlist-table tr:hover {
+  background-color: #f4f6f8;
+}
+
+.ai-score {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.score-bar,
+.volatility-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e1e5eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-fill,
+.volatility-fill {
+  height: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+  
+  .chart-controls {
+    flex-direction: column;
+  }
+  
+  .timeline-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -3,19 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "axios": "^1.9.0",
-    "d3": "^7.8.2",
-    "es-abstract": "^1.23.9",
-    "lucide-react": "^0.507.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "recharts": "^2.4.3",
+    "recharts": "^2.7.2",
     "topojson-client": "^3.1.0",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,9 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "resolutions": {
-    "source-map": "^0.8.0-beta.0",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.0"
   }
 }

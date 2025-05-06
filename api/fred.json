@@ -1,0 +1,6 @@
+---
+layout: null
+---
+{
+  "data": {{ site.data.api.fred | jsonify }}
+}

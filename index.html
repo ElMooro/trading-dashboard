@@ -1,3 +1,6 @@
+---
+layout: default
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,57 +33,53 @@
       border-radius: 5px;
       overflow-x: auto;
     }
+    .endpoint {
+      margin-bottom: 20px;
+    }
+    .method {
+      color: #0066cc;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h1>Macro Intelligence API</h1>
   <p>This GitHub Pages site serves as the API proxy for the Macro Intelligence Terminal.</p>
   
-  <h2>Available Data</h2>
-  <p>Data is stored in the <code>/data</code> directory of the repository and is accessible via the following URL pattern:</p>
-  <pre>https://raw.githubusercontent.com/ElMooro/trading-dashboard/main/data/{api}/{endpoint}.json</pre>
+  <h2>Available Endpoints</h2>
   
-  <h2>Available APIs</h2>
+  <div class="endpoint">
+    <h3><span class="method">GET</span> /api/fred.json</h3>
+    <p>Get all available FRED data.</p>
+    <p>Example: <a href="./api/fred.json">./api/fred.json</a></p>
+  </div>
+  
+  <h2>Data Sources</h2>
   <ul>
-    <li><code>fred</code> - Federal Reserve Economic Data</li>
-    <li><code>finnworlds</code> - Financial and economic data</li>
+    <li><code>FRED</code> - Federal Reserve Economic Data</li>
+    <li><code>Finnworlds</code> - Financial and economic data</li>
   </ul>
   
-  <h2>Triggering Data Updates</h2>
-  <p>To request fresh data, you can trigger the API proxy workflow manually:</p>
-  <pre>gh workflow run api-proxy.yml -f api=fred -f endpoint=series/observations -f params='{"series_id":"GDP","observation_start":"2019-01-01"}'</pre>
+  <h2>How to Update Data</h2>
+  <p>To add or update data:</p>
+  <ol>
+    <li>Create a JSON file in the appropriate <code>_data/api/[source]</code> directory</li>
+    <li>Commit and push the changes to the repository</li>
+    <li>GitHub Pages will automatically rebuild the site</li>
+  </ol>
   
-  <h2>API Documentation</h2>
-  <h3>FRED API</h3>
-  <ul>
-    <li><code>series/observations</code> - Get observations for a specific series</li>
-    <li><code>series</code> - Get information about a specific series</li>
-  </ul>
-   
-  <h3>Finnworlds API</h3>
-  <ul>
-    <li><code>market-data</code> - Get market data</li>
-    <li><code>economic-indicators</code> - Get economic indicators</li>
-  </ul>
-  
-  <h2>Recent Updates</h2>
-  <pre id="updates">Loading...</pre>
+  <h2>Sample Usage in JavaScript</h2>
+  <pre>
+fetch('https://elmooro.github.io/trading-dashboard/api/fred.json')
+  .then(response => response.json())
+  .then(data => {
+    console.log('FRED Data:', data);
+  })
+  .catch(error => console.error('Error fetching data:', error));
+  </pre>
   
   <script>
-    // Fetch and display recent updates
-    fetch('data/index.txt')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then(text => {
-        document.getElementById('updates').textContent = text || 'No updates recorded yet.';
-      })
-      .catch(error => {
-        document.getElementById('updates').textContent = 'Error loading updates: ' + error.message;
-      });
+    // You can add JavaScript here to dynamically load data
   </script>
 </body>
 </html>
